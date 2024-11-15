@@ -17,7 +17,7 @@ import sanitize from 'sanitize-filename';
 import { Profile } from './Model/Profile.js'
 import { Discussion } from './Model/Discussion.js'
 import { discussionRouter } from './Router/Discussion.js'
-import { commentsRouter } from './Router/Comment.js'
+import { commentRouter } from './Router/Comment.js'
 
 dotenv.config()
 const __filename = fileURLToPath(import.meta.url);
@@ -39,7 +39,7 @@ app.use('/api', documentRouter)
 app.use('/api', blog)
 app.use('/api', SocialMediaRouter)
 app.use('/api', discussionRouter)
-app.use('/api', commentsRouter)
+app.use('/api', commentRouter)
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
