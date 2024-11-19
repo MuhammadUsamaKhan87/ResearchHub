@@ -18,6 +18,11 @@ import { Profile } from './Model/Profile.js'
 import { Discussion } from './Model/Discussion.js'
 import { discussionRouter } from './Router/Discussion.js'
 import { commentRouter } from './Router/Comment.js'
+import { SearchRouter } from './Router/Search.js'
+import { ProjectRouter } from './Router/Project.js'
+import { commentBlogRouter } from './Router/BlogComment.js'
+import { File } from './Model/File.js'
+import { AnalyticsRouter } from './Router/Analytics.js'
 
 dotenv.config()
 const __filename = fileURLToPath(import.meta.url);
@@ -40,6 +45,10 @@ app.use('/api', blog)
 app.use('/api', SocialMediaRouter)
 app.use('/api', discussionRouter)
 app.use('/api', commentRouter)
+app.use('/api', SearchRouter)
+app.use('/api', ProjectRouter)
+app.use('/api', commentBlogRouter)
+app.use('/api', AnalyticsRouter)
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -175,4 +184,50 @@ app.post('/create/:id', upload.single('file'), async (req, res) => {
     }
 });
 
+app.post("/filesPROJECTS", upload.single("file"), async (req, res) => {
+    try {
+        const { title, description, projectId } = req.body;
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        const file = new File({
+            title,
+            description,
+            filePath: req.file.path,
+            projectId,
+        });
+
+        await file.save();
+        res.status(200).json({ message: "File uploaded successfully" });
+    } catch (error) {
+        console.error("Error uploading file:", error);
+        res.status(500).json({ message: "Error uploading file" });
+    }
+});
+
+// download file 
+app.get("/downloadFile/:id", async (req, res) => {
+    try {
+        const file = await File.findById(req.params.id);
+        if (!file) {
+            return res.status(404).json({ message: "File not found" });
+        }
+
+        const filePath = path.join(__dirname, file.filePath);
+        res.download(filePath, (err) => {
+            if (err) {
+                console.error("Error downloading file:", err);
+                if (!res.headersSent) {
+                    res.status(500).json({ message: "Error downloading file", error: err.message });
+                }
+            }
+        });
+    } catch (error) {
+        console.error("Error downloading file:", error);
+        if (!res.headersSent) {
+            res.status(500).json({ message: "Error downloading file", error: error.message });
+        }
+    }
+})
 app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`));

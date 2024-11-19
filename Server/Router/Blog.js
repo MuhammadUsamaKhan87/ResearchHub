@@ -80,6 +80,15 @@ router.put('/blog/:id/increment-view', async (req, res) => {
         res.status(500).json({ message: "Error incrementing view count" });
     }
 })
+router.delete('/blogDelete/:id', async (req, res) => {
+    try {
+        await Blog.findByIdAndDelete(req.params.id);
+        res.status(200).json({ message: 'Blog deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting blog:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 
 export { router as blog };

@@ -144,7 +144,7 @@ router.get('/fetchUsers', async (req, res) => {
     const { name } = req.query;
     try {
         const users = await User.find({
-            name: { $regex: name, $options: 'i' } // Case-insensitive search
+            name: { $regex: name, $options: 'i' }
         });
         res.json(users);
     } catch (error) {

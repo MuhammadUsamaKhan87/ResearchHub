@@ -7,8 +7,8 @@ const UserSchema = new mongoose.Schema({
     verificationCode: { type: String },
     isVerify: { type: Boolean, default: false },
     profileCompleted: { type: Boolean, default: false },
-    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
-    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }]
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 export const User = mongoose.model('Users', UserSchema);

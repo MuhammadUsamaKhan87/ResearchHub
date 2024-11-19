@@ -3,7 +3,6 @@ import { Document } from '../Model/Document.js'
 
 const router = express.Router()
 
-// Get all documents
 router.get('/documentfetch', async (req, res) => {
     try {
         const documents = await Document.find()
@@ -13,7 +12,6 @@ router.get('/documentfetch', async (req, res) => {
     }
 })
 
-// Get  document according to userId
 router.get('/documentfetch/:id', async (req, res) => {
     try {
         const documents = await Document.find({ userId: req.params.id })
@@ -22,12 +20,11 @@ router.get('/documentfetch/:id', async (req, res) => {
         res.status(500).json({ message: err.message })
     }
 })
-
-// put api that can change the value of like dislike and download
 router.put('/document/:id', async (req, res) => {
-    const { likes, dislikes, download } = req.body;
+    const { download } = req.body;
     try {
-        const document = await Document.findByIdAndUpdate(req.params.id, { likes, dislikes, download }, { new: true });
+        console.log(download)
+        const document = await Document.findByIdAndUpdate(req.params.id, { download }, { new: true });
         res.status(200).json(document);
     } catch (error) {
         res.status(500).json({ error: 'Failed to update like count' });
@@ -67,7 +64,6 @@ router.put('/document/like/:docId', async (req, res) => {
     }
 });
 
-// Undo like
 router.put('/document/undolike/:docId', async (req, res) => {
     const { docId } = req.params;
     const { userId } = req.body;
@@ -83,8 +79,6 @@ router.put('/document/undolike/:docId', async (req, res) => {
         res.status(500).json({ message: 'Error undoing like' });
     }
 });
-
-// Adding a dislike to the document
 router.put('/document/dislike/:docId', async (req, res) => {
     const { docId } = req.params;
     const { userId } = req.body;
@@ -108,8 +102,6 @@ router.put('/document/dislike/:docId', async (req, res) => {
         res.status(500).json({ message: 'Error disliking document' });
     }
 });
-
-// Undo dislike
 router.put('/document/undodislike/:docId', async (req, res) => {
     const { docId } = req.params;
     const { userId } = req.body;
